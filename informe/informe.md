@@ -437,7 +437,7 @@ Empecé por lo más grave (R1). Cambié la contraseña del Wi-Fi y la de adminis
 
 Ya que estaba en el panel, revisé WPS, que no estaba en la auditoría original. WPS permite conectarse con un PIN de 8 dígitos que se puede adivinar por fuerza bruta, y si está activo da lo mismo qué tan buena sea la contraseña. Estaba apagado en las dos bandas (Fig. R3 y R4).
 
-En las opciones avanzadas (Fig. R5) encontré que la administración remota estaba apagada y el bloqueo de WAN activo, que es lo que quería ver. UPnP estaba activo y lo dejé así, porque en casa se usa para jugar online y apagarlo puede limitar la conexión de la consola. Lo explico más abajo, en 7.4.
+En las opciones avanzadas (Fig. R5) encontré que la administración remota estaba apagada y el bloqueo de WAN activo, que es lo que quería ver. UPnP estaba activo y lo dejé así, porque en casa se usa para jugar online y apagarlo puede limitar la conexión de la consola.
 
 Para R5 anoté la versión del firmware desde el panel (no la publico). La actualización la maneja el proveedor.
 
