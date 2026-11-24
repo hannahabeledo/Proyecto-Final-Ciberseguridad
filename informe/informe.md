@@ -9,9 +9,9 @@
 | **Fecha de las pruebas** | Del 27 de septiembre al 5 de octubre de 2026 |
 | **Trabajos que integra** | Módulos 2, 3, 5 y 7, y partes de las prácticas de riesgos, phishing y Wi-Fi segura |
 
-> **Versión pública.** Esta es una versión adaptada del informe que entregué para el curso. Para publicarla saqué todo lo que identifica mi red, mis equipos o mis cuentas: la marca y el modelo del router, el proveedor de Internet, el nombre de la red Wi-Fi, las direcciones MAC y los fabricantes asociados, las direcciones IPv6 que identifican al proveedor y los nombres de los servicios que uso. La foto de la etiqueta del router (Fig. B8) no está incluida. Los resultados técnicos, el análisis y el plan de mitigación son los mismos que en el original.
+> **Sobre esta versión:** es el informe que entregué en el curso, adaptado para publicarlo. Saqué lo que identifica mi red, mis equipos y mis cuentas (el modelo del router, el proveedor de Internet, el nombre del Wi-Fi, las direcciones MAC y sus fabricantes, las IPv6 del proveedor y los nombres de los servicios que uso), y no incluí la foto de la etiqueta del router (Fig. B8). El análisis y los resultados son los mismos.
 
-> **Actualización (noviembre de 2026).** Después de la entrega apliqué el plan de mitigación y repetí los escaneos para verificarlo. Los riesgos altos están resueltos y cada hallazgo tiene su estado final en la [sección 7](#7-remediación-y-verificación-noviembre-de-2026). Las secciones 1 a 6 describen la situación al momento de la auditoría original (octubre de 2026).
+> **Actualización de noviembre de 2026:** después de entregar el trabajo apliqué el plan y repetí los escaneos. Eso está en la [sección 7](#7-remediación-y-verificación-noviembre-de-2026). Las secciones 1 a 6 cuentan cómo estaba todo en octubre.
 
 ## Declaración ética
 
@@ -429,122 +429,116 @@ Al momento de la entrega, mi postura digital era intermedia. Las dos medidas má
 
 ## 7. Remediación y verificación (noviembre de 2026)
 
-Después de la entrega apliqué el plan de la sección 5.2. Para cada hallazgo hice el cambio, lo comprobé con el método que había definido y, al final, repetí los escaneos de Nmap desde la máquina virtual para comparar con los de octubre. Las capturas de esta sección son las figuras R1 a R14.
+Un mes después de la entrega volví sobre el plan de la sección 5.2. La idea era aplicar las medidas y comprobar cada una con el método que yo misma había puesto en la tabla, y al final repetir los escaneos de Nmap para comparar con los de octubre. Las capturas de esta parte son las figuras R1 a R14.
 
-### 7.1 Estado final de los hallazgos
+### 7.1 Router
 
-| ID | Hallazgo | Qué hice | Cómo lo verifiqué | Estado |
-|---|---|---|---|---|
-| R1 | Contraseñas de fábrica en el router | Cambié la contraseña de administrador y la del Wi-Fi por contraseñas nuevas y únicas, guardadas en el gestor de contraseñas. | Con los datos de la etiqueta, el panel responde "Wrong login information" (Fig. R1). Wi-Fi en WPA2 + AES (Fig. R2). | ✅ Resuelto |
-| I2 | Cuenta financiera sin doble factor | Revisé la configuración de seguridad de la cuenta. | El token del banco, el SMS token y el mail de seguridad ya estaban activos para operar (Fig. R6). | ✅ Corregido (ver 7.2) |
-| I1 | Contraseñas repetidas | Revisé las cuentas críticas. | El correo tiene verificación en dos pasos desde 2022 y dos llaves de acceso (Fig. R7). El banco exige token para operar. | 🟡 Mitigado: falta reemplazar contraseñas repetidas en cuentas secundarias |
-| R2 | Panel del router por HTTP (puerto 80) | En las secciones del panel que revisé no encontré una opción para deshabilitar HTTP. Entro al panel solo por HTTPS. | El puerto 80 sigue abierto en el re-escaneo (Fig. R13). | 🟡 Riesgo aceptado (ver 7.3) |
-| R3 | Servicios en 9090 y 49152 / UPnP | Revisé las opciones avanzadas: UPnP activo, administración remota apagada y bloqueo de WAN activo (Fig. R5). Mantengo UPnP porque se usa para juegos online. | Sin cambios en el re-escaneo (Fig. R13). | 🟡 Riesgo aceptado (ver 7.3) |
-| R4 | Dispositivos IoT en la misma red | El panel del proveedor no tiene red de invitados. Compenso protegiendo los equipos importantes: firewall con modo encubierto en la Mac (M2). | La Mac no responde en los puertos cerrados (Fig. R14). | 🟡 Mitigado con controles compensatorios |
-| R5 | Firmware posiblemente viejo | Registré la versión del firmware desde el panel. El firmware lo administra y actualiza el proveedor. | Versión anotada (dato no publicado). | ✅ Verificado |
-| M1 | AirPlay visible en la red | Lo mantengo activo por uso personal, restringido al usuario actual y con contraseña (Fig. R8). | Los puertos 5000 y 7000 siguen abiertos pero rechazan dispositivos no autorizados. | ✅ Mitigado |
-| M2 | Modo sigiloso apagado | Activé el firewall de macOS con modo encubierto (Fig. R9). Revisé además que los servicios para compartir estén apagados (Fig. R10). | Los puertos cerrados pasaron de `closed (reset)` a `filtered (no-response)` (Fig. R14). | ✅ Resuelto |
-| M3 | Dirección Wi-Fi privada desactivada | Activé la dirección Wi-Fi privada (Fig. R11). | Nmap ya no identifica la Mac como Apple: aparece como `(Unknown)` (Fig. R12 y R14). | ✅ Resuelto |
-| M4 | Nmap estimó mal la versión de macOS | Informativo, sin acción. | — | ✅ Cerrado |
-| W1 / W2 | HTTP legible, DNS y SNI visibles | Uso HTTPS siempre que el sitio lo permite. La VPN y el DNS seguro quedan como buena práctica para redes públicas. | — | 🟡 Inherente al protocolo; se mitiga con hábitos |
-| — | WPS (control adicional, no estaba en la auditoría) | Revisé si estaba activo, porque el PIN de WPS se puede adivinar por fuerza bruta. | Apagado en 2,4 GHz y 5 GHz (Fig. R3 y R4). | ✅ Verificado |
+Empecé por lo más grave (R1). Cambié la contraseña del Wi-Fi y la de administrador del panel por contraseñas nuevas, guardadas en el gestor de contraseñas. Para comprobarlo cerré sesión y probé entrar con los datos de la etiqueta: el panel respondió "Wrong login information" (Fig. R1). El Wi-Fi quedó en WPA2 con AES (Fig. R2).
 
-### 7.2 Correcciones a la auditoría original
+Ya que estaba en el panel, revisé WPS, que no estaba en la auditoría original. WPS permite conectarse con un PIN de 8 dígitos que se puede adivinar por fuerza bruta, y si está activo da lo mismo qué tan buena sea la contraseña. Estaba apagado en las dos bandas (Fig. R3 y R4).
 
-Al aplicar el plan encontré que dos conclusiones de octubre no eran correctas:
+En las opciones avanzadas (Fig. R5) encontré que la administración remota estaba apagada y el bloqueo de WAN activo, que es lo que quería ver. UPnP estaba activo y lo dejé así, porque en casa se usa para jugar online y apagarlo puede limitar la conexión de la consola. Lo explico más abajo, en 7.4.
 
-- **I2:** había concluido que la cuenta financiera no tenía doble factor, pero el token ya estaba activo para operar. Mi evaluación se basó en el inicio de sesión, que solo pide usuario y clave, sin revisar la configuración de seguridad. El escenario de riesgo que había descrito (entrar con una contraseña filtrada y transferir dinero) ya estaba bloqueado por el token.
-- **I1:** el correo, que era el activo más expuesto a la reutilización de contraseñas, ya tenía verificación en dos pasos.
+Para R5 anoté la versión del firmware desde el panel (no la publico). La actualización la maneja el proveedor.
 
-Es el mismo aprendizaje que con la versión de macOS que estimó mal Nmap (M4): **una conclusión no está cerrada hasta que se verifica contra la configuración real**.
+Para R2 no encontré, en las secciones del panel que revisé, una opción para deshabilitar el acceso por HTTP. Lo que hago es entrar siempre por HTTPS.
 
-### 7.3 Riesgos aceptados y controles compensatorios
+### 7.2 Cuentas: dos cosas que había evaluado mal
 
-No todo se puede o conviene eliminar. Estos riesgos quedan documentados, con el motivo y los controles que los compensan:
+Acá me llevé una sorpresa. Cuando fui a activar el doble factor en la cuenta del banco (I2), vi que el token, el SMS token y el mail de seguridad ya estaban activos (Fig. R6). En octubre me había fijado solo en el inicio de sesión, que pide usuario y clave, y no revisé la configuración de seguridad. El escenario que había planteado (alguien entra con una contraseña filtrada y transfiere la plata) no era posible, porque para operar el banco pide el token.
 
-| Riesgo | Por qué se acepta | Controles compensatorios |
+Con el correo (I1) pasó algo parecido: la verificación en dos pasos está activa desde 2022 y además tengo dos llaves de acceso (Fig. R7).
+
+O sea que dos de mis conclusiones de octubre estaban mal. Lo dejo escrito porque es el mismo error que le marqué a Nmap con la versión de macOS (M4): sacar una conclusión sin ir a ver la configuración real. Lo que sí queda pendiente de I1 es cambiar las contraseñas repetidas en cuentas secundarias.
+
+### 7.3 Mi computadora
+
+El receptor AirPlay (M1) lo dejé activo porque lo uso, pero ya estaba limitado a mi usuario y con contraseña (Fig. R8). Por eso los puertos 5000 y 7000 siguen abiertos, pero rechazan a cualquier dispositivo que no sea mío.
+
+Activé el firewall de macOS con modo encubierto (M2, Fig. R9). En la lista del firewall quedaron permisos guardados para algunos servicios, como SSH o compartir archivos. Fui a ver si esos servicios estaban funcionando y estaban todos apagados (Fig. R10), así que no exponen nada. Igual bloquearlos me queda como mejora.
+
+Por último activé la dirección Wi-Fi privada (M3, Fig. R11). Por eso la IP de la Mac cambió de 192.168.0.24 a 192.168.0.72: el router la toma como un equipo nuevo.
+
+### 7.4 Lo que no cambié
+
+Hay cuatro cosas que quedaron como están. No las paso por alto: las registro como riesgos aceptados, con el motivo y lo que hice para compensarlas.
+
+- **UPnP (R3).** Se usa para juegos online. Lo compensan la administración remota apagada, el bloqueo de WAN, la contraseña de administrador nueva y el firewall de la Mac.
+- **Panel por HTTP en el puerto 80 (R2).** No encontré cómo deshabilitarlo. Como la administración remota está apagada, el panel no se ofrece hacia Internet, y desde la red de casa hace falta la contraseña nueva del Wi-Fi.
+- **Puerto 9090 (R3).** Es un servicio del firmware que no pude identificar ni gestionar desde el panel. Me queda consultarle al proveedor qué es y verificar desde afuera de mi red que no esté expuesto.
+- **Dispositivos inteligentes en la misma red (R4).** El panel no tiene red de invitados. Lo compenso protegiendo la computadora, con el firewall en modo encubierto y los servicios para compartir apagados.
+
+Lo de la navegación (W1 y W2) no tiene una solución de configuración, porque es cómo funcionan HTTP y DNS. Lo manejo con hábitos: HTTPS siempre que se pueda, y VPN en redes públicas.
+
+### 7.5 Re-escaneo
+
+Repetí los escaneos desde la máquina virtual, en modo puente, igual que en octubre.
+
+| Escaneo | Octubre | Noviembre |
 |---|---|---|
-| UPnP activo (R3) | Se usa para juegos online; apagarlo puede limitar la conexión de la consola. | Administración remota apagada, bloqueo de WAN activo, contraseña de administrador cambiada y firewall con modo encubierto en la Mac. |
-| Panel por HTTP en el puerto 80 (R2) | No encontré en el panel una opción para deshabilitarlo. | La administración remota está apagada, así que el panel no se ofrece hacia Internet. En la red local hace falta la contraseña Wi-Fi nueva. Ingreso al panel siempre por HTTPS. La contraseña de administrador ya no es la de fábrica. |
-| Puerto 9090 sin identificar (R3) | Pertenece al firmware del proveedor y no encontré cómo gestionarlo desde el panel. | Bloqueo de WAN activo y administración remota apagada. Queda pendiente consultar su función al proveedor y verificar desde afuera de la red que no esté expuesto. |
-| Sin red de invitados (R4) | El panel no ofrece esa opción. | Firewall con modo encubierto en la Mac. Los servicios para compartir están apagados. |
+| Red (`nmap -sn`) | 17 equipos. La Mac aparece como Apple. | 16 equipos. La Mac aparece como `Unknown` (Fig. R12). |
+| Router (`nmap -sS -sV -O`) | Abiertos 53, 80, 443, 9090 y 49152. 993 filtrados. | Igual (Fig. R13). |
+| Mac (`nmap -sS -sV`) | Abiertos 5000 y 7000. 998 cerrados (`reset`). | Abiertos 5000 y 7000. 998 filtrados (`no-response`) (Fig. R14). |
 
-### 7.4 Comparación de escaneos: antes y después
+Que el router dé lo mismo era lo esperable: no cerré puertos ahí, y lo importante es que no apareció ninguno nuevo. La diferencia está en la Mac. Antes contestaba cada intento de conexión con un rechazo, y con eso ya confirmaba que el equipo existía. Ahora no contesta. Y como usa una dirección privada, Nmap tampoco puede saber que es una Apple.
 
-| Equipo | Octubre de 2026 | Noviembre de 2026 |
-|---|---|---|
-| Red (`nmap -sn`) | 17 equipos activos. La Mac aparece con su MAC real de Apple. | 16 equipos activos. La Mac aparece con una MAC privada `(Unknown)` (Fig. R12). |
-| Router (`nmap -sS -sV -O`) | 5 abiertos (53, 80, 443, 9090, 49152), 2 cerrados, 993 filtrados. | Igual (Fig. R13). No apareció ningún puerto nuevo. |
-| Mac (`nmap -sS -sV`) | 2 abiertos (5000, 7000), **998 cerrados (reset)**. | 2 abiertos (5000, 7000), **998 filtrados (no-response)** (Fig. R14). |
-
-El cambio más claro es el de la Mac: antes respondía cada intento de conexión con un rechazo, lo que confirmaba que el equipo existía. Ahora no responde, y para un escaneo es como si esos puertos no estuvieran.
-
-### 7.5 Evidencias de la remediación
+### 7.6 Capturas
 
 ![Figura R1](img/R1.png)
 
-**Figura R1.** Intento de inicio de sesión en el panel del router con la contraseña de la etiqueta: "Wrong login information".
-Es la verificación que había definido para R1: la contraseña de fábrica ya no sirve.
+**Figura R1.** Intento de entrar al panel con la contraseña de la etiqueta: "Wrong login information".
 
 ![Figura R2](img/R2.png)
 
-**Figura R2.** Configuración de seguridad del Wi-Fi: WPA2 Personal + AES, con la contraseña nueva oculta.
-Recorté la captura para no mostrar el nombre de la red ni el código QR del panel, que contiene la contraseña.
+**Figura R2.** Seguridad del Wi-Fi en WPA2 Personal con AES. Recorté la captura para que no se vea el nombre de la red ni el código QR del panel, que tiene la contraseña adentro.
 
 ![Figura R3](img/R3.png)
 
-**Figura R3.** WPS desactivado en la banda de 2,4 GHz.
+**Figura R3.** WPS apagado en 2,4 GHz.
 
 ![Figura R4](img/R4.png)
 
-**Figura R4.** WPS desactivado en la banda de 5 GHz.
-WPS permite conectarse con un PIN de 8 dígitos que tiene una falla conocida de fuerza bruta. Con WPS apagado, la única forma de entrar al Wi-Fi es la contraseña.
+**Figura R4.** WPS apagado en 5 GHz.
 
 ![Figura R5](img/R5.png)
 
 **Figura R5.** Opciones avanzadas del router: bloqueo de WAN activo, administración remota apagada y UPnP activo.
-La administración remota apagada impide entrar al panel desde Internet. UPnP queda activo como riesgo aceptado (sección 7.3).
 
 ![Figura R6](img/R6.png)
 
-**Figura R6.** Factores de seguridad de la cuenta financiera: mail de seguridad, token y SMS token activos. El nombre del banco está tapado.
-Evidencia de la corrección de I2 (sección 7.2).
+**Figura R6.** Factores de seguridad de la cuenta del banco, todos activos. Tapé el nombre del banco.
 
 ![Figura R7](img/R7.png)
 
-**Figura R7.** Cuenta de correo: verificación en dos pasos activa desde el 30/10/2022 y dos llaves de acceso.
+**Figura R7.** Verificación en dos pasos del correo, activa desde octubre de 2022, con dos llaves de acceso.
 
 ![Figura R8](img/R8.png)
 
-**Figura R8.** Receptor AirPlay restringido al usuario actual y con contraseña.
+**Figura R8.** AirPlay limitado al usuario actual y con contraseña.
 
 ![Figura R9](img/R9.png)
 
 **Figura R9.** Opciones del firewall de macOS con el modo encubierto activado.
-En la lista quedan permisos guardados para algunos servicios. No exponen nada porque esos servicios están apagados (Fig. R10). Bloquearlos queda como mejora futura, por el principio de mínimo servicio.
 
 ![Figura R10](img/R10.png)
 
-**Figura R10.** Compartir: compartir archivos, sesión remota (SSH), administración remota y el resto de los servicios, desactivados.
+**Figura R10.** Servicios para compartir de macOS, todos apagados (incluidos sesión remota y compartir archivos).
 
 ![Figura R11](img/R11.png)
 
-**Figura R11.** Dirección Wi-Fi privada en modo "Fija". La dirección MAC está tapada.
+**Figura R11.** Dirección Wi-Fi privada en "Fija". Tapé la dirección MAC.
 
 ![Figura R12](img/R12.png)
 
-**Figura R12.** Re-escaneo de descubrimiento (`sudo nmap -sn 192.168.0.0/24`): 16 equipos activos. MAC y fabricantes tapados.
-La Mac (192.168.0.72) aparece como `(Unknown)`: con la dirección privada, Nmap ya no puede saber que es una Apple (M3).
+**Figura R12.** Re-escaneo de la red con `sudo nmap -sn 192.168.0.0/24`: 16 equipos. Tapé las MAC y los fabricantes. La Mac (192.168.0.72) aparece como `Unknown`.
 
 ![Figura R13](img/R13.png)
 
-**Figura R13.** Re-escaneo del router (`sudo nmap -sS -sV -O 192.168.0.1`). MAC y fabricante tapados.
-Mismo resultado que en octubre (Fig. B10): no apareció ningún puerto nuevo.
+**Figura R13.** Re-escaneo del router con `sudo nmap -sS -sV -O 192.168.0.1`. Mismos puertos que en la Fig. B10.
 
 ![Figura R14](img/R14.png)
 
-**Figura R14.** Re-escaneo de la Mac (`sudo nmap -sS -sV 192.168.0.72`). MAC privada tapada.
-`998 filtered tcp ports (no-response)`: con el modo encubierto, la Mac ya no responde en los puertos cerrados. En octubre eran `998 closed tcp ports (reset)` (Fig. B6).
+**Figura R14.** Re-escaneo de la Mac con `sudo nmap -sS -sV 192.168.0.72`: `998 filtered tcp ports (no-response)`. En octubre decía `998 closed tcp ports (reset)` (Fig. B6).
 
 ---
 
