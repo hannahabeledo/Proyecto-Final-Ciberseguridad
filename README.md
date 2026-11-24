@@ -18,16 +18,30 @@ Proyecto final del Curso de Ciberseguridad de Coderhouse (octubre de 2026). Audi
 ## Resultados principales
 
 - **13 hallazgos** clasificados en cuatro niveles de gravedad (alta, media, baja e informativa).
-- **Riesgos altos:** contraseñas de fábrica en el router y una cuenta financiera sin doble factor de autenticación.
+- **Riesgos altos detectados en octubre:** contraseñas de fábrica en el router y una cuenta financiera que parecía no tener doble factor. Los dos quedaron resueltos (ver Remediación).
 - **Exposición de la computadora:** baja, con 2 puertos abiertos de 1000.
 - **Validación de herramientas:** la detección de sistema operativo de Nmap estimó mal la versión de macOS; la corregí con el dato real del equipo y lo documenté como hallazgo.
 - **Plan de mitigación** con 10 acciones priorizadas, responsable, plazo y método de verificación para cada una.
+
+## Remediación (noviembre de 2026)
+
+Después de la entrega apliqué el plan y repetí los escaneos para verificarlo. Detalle completo en la [sección 7 del informe](informe/informe.md#7-remediación-y-verificación-noviembre-de-2026).
+
+| Resultado | Hallazgos |
+|---|---|
+| ✅ Resueltos y verificados | Contraseñas de fábrica del router, firewall de la Mac con modo encubierto, dirección Wi-Fi privada, WPS apagado (control adicional) |
+| ✅ Corregidos tras verificar | La cuenta financiera y el correo ya tenían doble factor: la evaluación inicial estaba incompleta |
+| 🟡 Riesgos aceptados con controles compensatorios | UPnP (se usa para juegos online), panel del router por HTTP, puerto 9090 del proveedor, red sin segmentar para IoT |
+
+El cambio más visible está en el re-escaneo de la computadora: los 998 puertos cerrados pasaron de `closed (reset)` a `filtered (no-response)`.
 
 ## Qué aprendí
 
 - No alcanza con correr la herramienta: comparar escaneos y verificar contra la realidad es parte del análisis.
 - La seguridad se arma por capas, y los mismos principios (mínimo servicio, mínimo privilegio) sirven para una VM, un router o una computadora.
 - En una red doméstica, el punto más débil no suele ser la computadora sino lo que la rodea: el router, los dispositivos IoT y cómo se manejan las cuentas.
+- Una conclusión no está cerrada hasta que se verifica contra la configuración real: al remediar encontré dos hallazgos que había evaluado mal.
+- No todo riesgo se elimina: algunos se aceptan, siempre que se documente por qué y qué los compensa.
 
 ## Sobre esta versión
 
